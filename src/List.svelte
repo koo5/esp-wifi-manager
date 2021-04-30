@@ -1,6 +1,7 @@
 <script>
 	import {onMount} from "svelte";
 
+	import _ from 'underscore';
 	import WebSocketClient from "js-websocket-reconnect-client";
 
 	export let url = "ws://localhost:8080/svelte/ws/";
@@ -54,7 +55,7 @@
 					} catch
 						(e)
 					{
-						push({'type': 'msg_parsing_error', 'event': e, 'original': m});
+						push({'type': 'msg_parsing_error', 'msg': e, 'original': m});
 					}
 					if (ok)
 						push({'type': 'msg', 'event': message});
@@ -88,67 +89,100 @@
 		let e = x['event']
 		if (e)
 		{
-			obj['reason'] = e['reason']
-			obj['code'] = e['code']
-			obj['type'] = e['type']
+			obj['msg']['event_details'] = {
+				'reason': e['reason'],
+				'code': e['code'],
+				'type': e['type']
+			}
 		}
 		console.log(obj);
 		messages.unshift(obj);
 		messages = messages.slice(0, 333);
+
+		if (obj.msg.type === 'msg_parsing_error')
+		{
+			ssids[obj.msg.original] = {
+				ts: obj.ts,
+				signal: 'good'
+			}
+			ssids = ssids;
+		}
 	}
 
+	let ssids = {};
+	$: ssid_names = _.sortBy(Object.keys(ssids));
+
 </script>
-<div>
 
-	<h5>Connection</h5>
-	<table>
-		<tr>
-			<th>URL</th>
-			<th>ws_current_state</th>
-			<th>connection_attempts</th>
-			<th>ws</th>
-		</tr>
-		<tr>
-			<td>
-				<input bind:value={url}>
-			</td>
-			<td>
-				{JSON.stringify(ws_current_state)}
-			</td>
-			<td>
-				{connection_attempts.toString()}
-			</td>
-			<td>
-				<details>
-					<summary>ws</summary>
-					<pre>{JSON.stringify(ws, null, ' ')}</pre>
-				</details>
-			</td>
-		</tr>
-	</table>
+<h5>Connection</h5>
+<table>
+	<tr>
+		<th>URL</th>
+		<th>ws_current_state</th>
+		<th>connection_attempts</th>
+		<th>ws</th>
+	</tr>
+	<tr>
+		<td>
+			<input bind:value={url}>
+		</td>
+		<td>
+			{JSON.stringify(ws_current_state)}
+		</td>
+		<td>
+			{connection_attempts.toString()}
+		</td>
+		<td>
+			<details>
+				<summary>ws</summary>
+				<pre>{JSON.stringify(ws, null, ' ')}</pre>
+			</details>
+		</td>
+	</tr>
+</table>
 
-	<h5>Events</h5>
-	<table>
+<h5>Scan</h5>
+<table>
+	<tr>
+		<th>SSID</th>
+		<th>...</th>
+	</tr>
+	{#each ssid_names as name}
 		<tr>
-			<th>ID</th>
-			<th>...</th>
+			<td>
+				{name}
+			</td>
+			<td>
+				{JSON.stringify(ssids[name], null, ' ')}
+			</td>
 		</tr>
-		{#each messages as m}
-			<tr>
-				<td>
-					{m.id}
-				</td>
-				<td>
-					<small>{m.ts}</small>:
-					<br>
-					<b>
-						{JSON.stringify(m.msg, null, '')}
-					</b>
-					<br>
-				</td>
-			</tr>
-		{/each}
-</div>
+	{/each}
+</table>
+
+
+<h5>Events</h5>
+<table>
+	<tr>
+		<th>ID</th>
+		<th>...</th>
+	</tr>
+	{#each messages as m}
+		<tr>
+			<td>
+				{m.id}
+			</td>
+			<td>
+				<small>{m.ts}</small>:
+				<br>
+				<b>
+					{JSON.stringify(m.msg, null, '')}
+				</b>
+				<br>
+			</td>
+		</tr>
+	{/each}
+</table>
+
 
 <style>
     table {

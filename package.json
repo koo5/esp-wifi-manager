@@ -11,6 +11,7 @@
   "dependencies": {
     "js-websocket-reconnect-client": "^0.0.13",
     "svelte": "^3.37.0",
+    "underscore": "^1.13.1",
     "websocket-reconnect": "^1.0.4"
   }
 }

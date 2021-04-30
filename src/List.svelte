@@ -20,16 +20,22 @@
 	{
 		setInterval(() =>
 		{
-			push('...');
-			update_ws_current_state();
-			if (['OPEN', 'CONNECTING'].indexOf(ws_current_state) === -1)
-			{
-				push('try reconnect');
-				connection_attempts++;
-				url = url
-			}
+			maybe_reconnect();
+			tick();
 		}, 5000);
 	});
+
+	function maybe_reconnect()
+	{
+		push('...');
+		update_ws_current_state();
+		if (['OPEN', 'CONNECTING'].indexOf(ws_current_state) === -1)
+		{
+			push('try reconnect');
+			connection_attempts++;
+			url = url
+		}
+	}
 
 	function make_ws(url)
 	{
@@ -103,7 +109,8 @@
 		{
 			ssids[obj.msg.original] = {
 				ts: obj.ts,
-				signal: 'good'
+				signal: 'good',
+				last_seen_before: 0
 			}
 			ssids = ssids;
 		}
@@ -111,6 +118,17 @@
 
 	let ssids = {};
 	$: ssid_names = _.sortBy(Object.keys(ssids));
+
+	function tick()
+	{
+		let now = new Date();
+		Object.entries(ssids).forEach(x =>
+		{
+			const [name, item] = x;
+			item.last_seen_before = now - item.ts;
+		});
+		ssids = ssids
+	}
 
 </script>
 
@@ -145,7 +163,10 @@
 <table>
 	<tr>
 		<th>SSID</th>
-		<th>...</th>
+		<th>signal</th>
+		<th>old(ms)</th>
+		<th>ts</th>
+		<th>raw(json)</th>
 	</tr>
 	{#each ssid_names as name}
 		<tr>
@@ -153,7 +174,22 @@
 				{name}
 			</td>
 			<td>
-				{JSON.stringify(ssids[name], null, ' ')}
+				{ssids[name].signal}
+			</td>
+			<td>
+				{ssids[name].last_seen_before}
+			</td>
+			<td>
+			<details>
+				<summary>...</summary>
+				{ssids[name].ts}
+			</details>
+			</td>
+			<td>
+			<details>
+				<summary>...</summary>
+				<pre>{JSON.stringify(ssids[name], null, ' ')}</pre>
+			</details>
 			</td>
 		</tr>
 	{/each}

@@ -5,21 +5,25 @@
 
 	export let url = "ws://localhost:8080/svelte/ws/";
 	//$: console.log(url);
-	$: ws = make_ws(url);
 
+	$: ws = make_ws(url);
 	let connection_attempts = 0;
 	let ws_current_state = null;
+
 	function update_ws_current_state()
 	{
 		ws_current_state = ws?.getCurrentState();
 	}
+
 	onMount(() =>
 	{
 		setInterval(() =>
 		{
+			push('...');
 			update_ws_current_state();
-			if (!['OPEN','CONNECTING'].indexOf(ws_current_state))
+			if (['OPEN', 'CONNECTING'].indexOf(ws_current_state) === -1)
 			{
+				push('try reconnect');
 				connection_attempts++;
 				url = url
 			}
@@ -43,13 +47,12 @@
 			let ws = new WebSocketClient(url, protocols, options);
 			ws.addOnMessageHandler((m) =>
 				{
-				try
+					try
 					{
 						var message = JSON.parse(m);
 						var ok = true;
-					}
-				catch
-					(e)
+					} catch
+						(e)
 					{
 						push({'type': 'msg_parsing_error', 'event': e, 'original': m});
 					}
@@ -71,6 +74,7 @@
 	}
 
 	var messages = [];
+	var last_msg_id = 0;
 
 	function push(x)
 	{
@@ -78,7 +82,8 @@
 		console.log(x);
 		let obj = {
 			ts: new Date(),
-			msg: (x)
+			msg: (x),
+			id: last_msg_id++
 		}
 		let e = x['event']
 		if (e)
@@ -88,29 +93,69 @@
 			obj['type'] = e['type']
 		}
 		console.log(obj);
-		messages.push(obj);
-		messages = messages;
+		messages.unshift(obj);
+		messages = messages.slice(0, 333);
 	}
-
-	$: messages_reversed = [...messages].reverse();
 
 </script>
 <div>
-	ws_current_state: {JSON.stringify(ws_current_state)}<br>
-	connection_attempts:{connection_attempts.toString()}<br>
 
-	<details>
-		<summary>ws</summary>
-		<pre>{JSON.stringify(ws, null, ' ')}</pre>
-	</details>
-	<ol reversed>
-		{#each messages_reversed as message}
-			<li>
-				{JSON.stringify(message, null, ' ')}
-			</li>
+	<h5>Connection</h5>
+	<table>
+		<tr>
+			<th>URL</th>
+			<th>ws_current_state</th>
+			<th>connection_attempts</th>
+			<th>ws</th>
+		</tr>
+		<tr>
+			<td>
+				<input bind:value={url}>
+			</td>
+			<td>
+				{JSON.stringify(ws_current_state)}
+			</td>
+			<td>
+				{connection_attempts.toString()}
+			</td>
+			<td>
+				<details>
+					<summary>ws</summary>
+					<pre>{JSON.stringify(ws, null, ' ')}</pre>
+				</details>
+			</td>
+		</tr>
+	</table>
+
+	<h5>Events</h5>
+	<table>
+		<tr>
+			<th>ID</th>
+			<th>...</th>
+		</tr>
+		{#each messages as m}
+			<tr>
+				<td>
+					{m.id}
+				</td>
+				<td>
+					<small>{m.ts}</small>:
+					<br>
+					<b>
+						{JSON.stringify(m.msg, null, '')}
+					</b>
+					<br>
+				</td>
+			</tr>
 		{/each}
-	</ol>
 </div>
 
 <style>
+    table {
+        margin: 0;
+        border: 1px inset rgba(128, 110, 164, 0.48);
+        border-radius: 0px 17px 12px 13px;
+        border-collapse: separate;
+        border-spacing: 1em 0;
+    }
 </style>

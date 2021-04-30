@@ -2,15 +2,12 @@
 
 	import List from './List.svelte';
 
-	let url = "ws://localhost:8080/svelte/ws/";
-	$: console.log(url);
-
 </script>
 
 <div class="App">
-	<input bind:value={url}>
 
-	<List {url}/>
+	<List/>
+
 	<a class="App-link" href="https://svelte.dev" target="_blank" rel="noopener noreferrer">
 		Learn Svelte
 	</a>

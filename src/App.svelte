@@ -2,13 +2,13 @@
 	import List from './List.svelte';
 </script>
 <style>
-  /* css will go here */
+    body {
+        font-family: Montserrat, sans-serif;
+    }
 </style>
 <div class="App">
-  <header class="App-header">
-    <a class="App-link" href="https://svelte.dev" target="_blank" rel="noopener noreferrer">
-      Learn Svelte
-    </a>
-  </header>
-  <List/>
+	<a class="App-link" href="https://svelte.dev" target="_blank" rel="noopener noreferrer">
+		Learn Svelte
+	</a>
+	<List/>
 </div>

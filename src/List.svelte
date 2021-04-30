@@ -1,43 +1,58 @@
 <script>
-import events from 'events';
-const {EventEmitter} = events;
 
-	import { WsReconnect } from 'websocket-reconnect';
+	import WebSocketClient from "js-websocket-reconnect-client";
 
-	const ws = new WsReconnect({ reconnectDelay: 5000 });
+	const url = "ws://localhost:8080/svelte/ws/";
 
-	var host = 'localhost'
-	var port = '1234'
+	const protocols = [];
+	const options = {
+		shouldReconnect: true,
+		reconnectRetryTimeout: 2000,
+		parsedMessage: true,
+		reconnectRetryMaxNumber: null,
+		debug: false,
+	}
+	const ws = new WebSocketClient(url, protocols, options);
 
-	var interval = setInterval(poke, 1000);
+	var messages = [];
 
-	function poke()
+	function push(x)
 	{
-		ws.send('ping');
+		console.log(x);
+		messages.push(x);
+		messages = messages;
 	}
 
-	ws.open(`ws://${host}:${port}`);
+	ws.addOnMessageHandler(push);
+	ws.addOnOpenHandler(push);
+	ws.addOnCloseHandler(push);
+	ws.addOnErrorHandler(push);
 
-	ws.on('open', function open() {
-		// this will only be called once, not on reconnect
-	});
+	ws.connect();
 
-	ws.on('reconnect', function open() {
-		// this will only be called on every reconnect attempt
-	});
-
-	ws.on('message', (data) => {
-		const json = JSON.parse(data);
-		console.log('======== received', json);
-	});
-
-	ws.on('close', () => {
-		interval && clearInterval(interval);
-	});
 </script>
 <ol>
-	<li>
-		1
-	</li>
-
+	{#each messages as message}
+		<li>
+			{JSON.stringify(message,null,' ')}
+		</li>
+	{/each}
 </ol>
+
+<style>
+    ol {
+        list-style: none;
+        counter-reset: my-awesome-counter;
+    }
+
+    ol li {
+        counter-increment: my-awesome-counter;
+    }
+
+    ol li::before {
+        content: counter(my-awesome-counter) ". ";
+        color: red;
+        font-weight: bold;
+    }
+
+</style>

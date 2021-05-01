@@ -22,6 +22,9 @@ snowpack, in dev mode (even with hmr on):
 in build:
 missing css?
 
+vite:
+__vite_ssr_import_6__.exclude is not a function
+
  */
 //
 

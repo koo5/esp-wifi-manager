@@ -33,7 +33,7 @@
 
 <tr>
 	<td>
-		<button on:click={connect()}>connect</button>
+		<button on:click={connect}>connect</button>
 	</td>
 	<td>
 		{ssid.value.ssid}

@@ -4,6 +4,17 @@
 	// https://smeltejs.com/components/data-tables/
 
 
+/*
+
+
+https://github.com/matyunya/smelte/issues/235
+
+
+*/
+
+
+
+
   import { DataTable, Image } from "smelte";
 
   let data = [];

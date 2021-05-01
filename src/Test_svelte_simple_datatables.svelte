@@ -4,6 +4,39 @@
 	// https://vincjo.fr/svelte-simple-datatables/
 
 
+
+/*
+
+appears to work, but:
+
+Uncaught TypeError: i is undefined
+    redraw svelte-simple-datatables.js:248
+    redraw svelte-simple-datatables.js:246
+    redraw svelte-simple-datatables.js:244
+    setTimeout handler*redraw svelte-simple-datatables.js:240
+    resize svelte-simple-datatables.js:316
+    init svelte-simple-datatables.js:274
+    init svelte-simple-datatables.js:273
+    Wc svelte-simple-datatables.js:2203
+    wl index-80b6ced9.js:10
+    V index-80b6ced9.js:673
+    Fl index-80b6ced9.js:383
+    ne index-80b6ced9.js:747
+    zo App.svelte.js:82
+    <anonymous> index.js:3
+
+
+
+
+
+
+
+ */
+
+
+
+
+
 	import {Datatable, rows} from 'svelte-simple-datatables'
 	import Ssid from './Ssid.svelte';
 
@@ -12,15 +45,20 @@
 
 </script>
 
+
+
 <div class="wrapper">
     <div class="one"></div>
     <div class="two"></div>
     <div class="three">
     	<Datatable settings={settings} data={ssids}>
 			<thead>
-			<th data-key="first_name">First Name</th>
-			<th data-key="(row) => row.value.ssid">Last Name</th>
-			<th data-key="email">Email</th>
+				<th data-key="first_name">First Name</th>
+				<th data-key="(row) => row.value.ssid">Last Name</th>
+				<th data-key="email">Email</th>
+				<th data-key="email2">Email</th>
+				<th data-key="email3">Email</th>
+				<th data-key="email4">Email</th>
 			</thead>
 			<tbody>
 			{#each $rows as row}

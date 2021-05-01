@@ -174,25 +174,49 @@
 
 </script>
 
+
+
+note:1) i can also disable hmr (in snowpack), but it doesn't help.<br>
+in build mode, all tables works, just, apparently, we're missing some css here and there,
+except in Test_svelte_simple_datatables.<br>
+details in individual files.<br>
+
+
+
+<h5>Test_mattiash_svelte_tablesort</h5>
+<div class="mydiv">
+	<Test_mattiash_svelte_tablesort/>
+</div>
+
+<!--
 <h5>Test_svelte_simple_datatables</h5>
 <div class="mydiv">
 	<Test_svelte_simple_datatables ssids={Object.values(ssids)}/>
 </div>
+-->
 
+<!--
 <h5>Test_smui_data_table</h5>
 <div class="mydiv">
 	<Test_smui_data_table/>
 </div>
+-->
 
+
+<!--
 <h5>Test_smui_stuff</h5>
 <div class="mydiv">
 	<Test_smui_stuff/>
 </div>
+-->
 
+
+<!--
 <h5>Test_smeltejs_data_tables</h5>
 <div class="mydiv">
 	<Test_smeltejs_data_tables/>
 </div>
+-->
 
 
 

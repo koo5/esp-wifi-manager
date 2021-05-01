@@ -5,7 +5,18 @@
 	import {onMount} from "svelte";
 	import WebSocketClient from "js-websocket-reconnect-client";
 	import Ssid from './Ssid.svelte';
-	import Ssids from './Ssids.svelte';
+
+
+
+
+	import Test_mattiash_svelte_tablesort from './Test_mattiash_svelte_tablesort.svelte';
+	import Test_svelte_simple_datatables from './Test_svelte_simple_datatables.svelte';
+	import Test_smeltejs_data_tables from './Test_smeltejs_data_tables.svelte';
+	import Test_smui_data_table from './Test_smui_data_table.svelte';
+	import Test_smui_stuff from './Test_smui_stuff.svelte';
+
+
+
 
 	export let host = "localhost:8080";
 	$: url = "ws://" + host + "/svelte/ws/";
@@ -154,9 +165,36 @@
 		ssids = ssids
 	}
 
-//<Ssids ssids={Object.values(ssids)}/>
+
+
+
+
+
+
 
 </script>
+
+<h5>Test_svelte_simple_datatables</h5>
+<div class="mydiv">
+	<Test_svelte_simple_datatables ssids={Object.values(ssids)}/>
+</div>
+
+<h5>Test_smui_data_table</h5>
+<div class="mydiv">
+	<Test_smui_data_table/>
+</div>
+
+<h5>Test_smui_stuff</h5>
+<div class="mydiv">
+	<Test_smui_stuff/>
+</div>
+
+<h5>Test_smeltejs_data_tables</h5>
+<div class="mydiv">
+	<Test_smeltejs_data_tables/>
+</div>
+
+
 
 
 <h5>Connection</h5>
@@ -239,6 +277,13 @@
 
 <style>
     table {
+        margin: 0;
+        border: 1px inset rgba(128, 110, 164, 0.48);
+        border-radius: 0px 17px 12px 13px;
+        border-collapse: separate;
+        border-spacing: 1em 0;
+    }
+    .mydiv {
         margin: 0;
         border: 1px inset rgba(128, 110, 164, 0.48);
         border-radius: 0px 17px 12px 13px;

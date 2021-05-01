@@ -20,7 +20,7 @@ module.exports = {
     /* ... */
   },
   devOptions: {
-    /* ... */
+    //hmr: false
   },
   buildOptions: {
     /* ... */

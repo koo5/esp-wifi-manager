@@ -7,10 +7,8 @@
 
 
 
-  let progress = 300;
-  let closed = false;
-
 </script>
+
 
 <div class="App">
 

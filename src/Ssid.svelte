@@ -1,11 +1,6 @@
 <script>
 
-	import {getContext} from "svelte";
-
 	export let ssid;
-
-	let banana = getContext('banana');
-	console.log(banana);
 
 	function clamp_color(x)
 	{

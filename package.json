@@ -10,14 +10,15 @@
     "@smui/linear-progress": "^4.1.0",
     "@smui/ripple": "^4.1.0",
     "@snowpack/plugin-svelte": "^3.6.1",
+    "smelte": "^1.1.5",
     "smui-theme": "^4.1.0",
-    "snowpack": "^3.0.1"
+    "snowpack": "^3.0.1",
+    "svelte-simple-datatables": "^0.1.25"
   },
   "dependencies": {
     "dayjs": "^1.10.4",
     "js-websocket-reconnect-client": "^0.0.13",
     "svelte": "^3.37.0",
-    "svelte-simple-datatables": "^0.1.25",
     "underscore": "^1.13.1",
     "websocket-reconnect": "^1.0.4"
   }

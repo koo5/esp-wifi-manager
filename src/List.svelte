@@ -1,15 +1,23 @@
 <script>
-	import {onMount} from "svelte";
 
+	import dayjs from 'dayjs/esm';
 	import _ from 'underscore';
+	import {onMount} from "svelte";
 	import WebSocketClient from "js-websocket-reconnect-client";
+	import Ssids from './Ssids.svelte';
+	import Ssid from './Ssid.svelte';
 
-	export let url = "ws://localhost:8080/svelte/ws/";
+	export let host = "localhost:8080";
+	$: url = "ws://" + host + "/svelte/ws/";
 	//$: console.log(url);
 
-	$: ws = make_ws(url);
+	$: ws = make_ws(url, connection_attempts);
 	let connection_attempts = 0;
 	let ws_current_state = null;
+	let now;
+	let last_message_ts;
+	let last_connect_attempt_ts;
+	$: last_message_ago = now - last_message_ts;
 
 	function update_ws_current_state()
 	{
@@ -20,8 +28,9 @@
 	{
 		setInterval(() =>
 		{
+			now = new Date();
+			update_ssid_last_seens();
 			maybe_reconnect();
-			tick();
 		}, 5000);
 	});
 
@@ -29,16 +38,27 @@
 	{
 		push('...');
 		update_ws_current_state();
-		if (['OPEN', 'CONNECTING'].indexOf(ws_current_state) === -1)
+		if (
+			(
+				last_message_ago > 10000
+				||
+				Number.isNaN(last_message_ago)
+				||
+				['OPEN', 'CONNECTING'].indexOf(ws_current_state) === -1
+			)
+			&&
+			((now - last_connect_attempt_ts) > 10000)
+		)
 		{
+			console.log('XXXXXXXXXXXXXXXXXXXXX');
 			push('try reconnect');
 			connection_attempts++;
-			url = url
 		}
 	}
 
 	function make_ws(url)
 	{
+		last_connect_attempt_ts = new Date();
 		ws?.close();
 		push('connect to ' + url);
 		const protocols = [];
@@ -64,16 +84,15 @@
 						push({'type': 'msg_parsing_error', 'msg': e, 'original': m});
 					}
 					if (ok)
-						push({'type': 'msg', 'event': message});
+						push({'type': 'msg', 'value': message});
 				}
 			);
 			ws.addOnOpenHandler(m => push({'type': 'opened', 'event': m}));
 			ws.addOnCloseHandler(m => push({'type': 'closed', 'event': m}));
 			ws.addOnErrorHandler(m => push({'type': 'error', 'event': m}));
 			ws.connect();
-			push('connection initiated..');
 			return ws;
-		} catch // doesnt seem to ever happen
+		} catch
 			(e)
 		{
 			push(e);
@@ -85,11 +104,11 @@
 
 	function push(x)
 	{
-		update_ws_current_state();
 		console.log(x);
+		update_ws_current_state();
 		let obj = {
 			ts: new Date(),
-			msg: (x),
+			msg: x,
 			id: last_msg_id++
 		}
 		let e = x['event']
@@ -101,27 +120,32 @@
 				'type': e['type']
 			}
 		}
-		console.log(obj);
+		//console.log(obj);
 		messages.unshift(obj);
 		messages = messages.slice(0, 333);
 
-		if (obj.msg.type === 'msg_parsing_error')
+		if (obj.msg.type === 'msg')
 		{
-			ssids[obj.msg.original] = {
-				ts: obj.ts,
-				signal: 'good',
-				last_seen_before: 0
+			let value = obj.msg.value;
+			last_message_ts = new Date();
+			if (value.ssid)
+			{
+				ssids[value.ssid] = {
+					host,
+					value,
+					ts: obj.ts,
+					last_seen_before: 0
+				}
+				ssids = ssids;
 			}
-			ssids = ssids;
 		}
 	}
 
 	let ssids = {};
 	$: ssid_names = _.sortBy(Object.keys(ssids));
 
-	function tick()
+	function update_ssid_last_seens()
 	{
-		let now = new Date();
 		Object.entries(ssids).forEach(x =>
 		{
 			const [name, item] = x;
@@ -131,21 +155,30 @@
 	}
 
 </script>
+<Ssids></Ssids>
 
 <h5>Connection</h5>
 <table>
 	<tr>
-		<th>URL</th>
+		<th>host</th>
+		<th>ws url</th>
 		<th>ws_current_state</th>
+		<th>last_message (ms)</th>
 		<th>connection_attempts</th>
 		<th>ws</th>
 	</tr>
 	<tr>
 		<td>
+			<input bind:value={host}>
+		</td>
+		<td>
 			<input bind:value={url}>
 		</td>
 		<td>
 			{JSON.stringify(ws_current_state)}
+		</td>
+		<td>
+			{!Number.isNaN(last_message_ago) ? last_message_ago : '-'}
 		</td>
 		<td>
 			{connection_attempts.toString()}
@@ -162,36 +195,15 @@
 <h5>Scan</h5>
 <table>
 	<tr>
+		<th></th>
 		<th>SSID</th>
 		<th>signal</th>
-		<th>old(ms)</th>
-		<th>ts</th>
-		<th>raw(json)</th>
+		<th>last seen (ms)</th>
+		<th>chan</th>
+		<th>raw (json)</th>
 	</tr>
 	{#each ssid_names as name}
-		<tr>
-			<td>
-				{name}
-			</td>
-			<td>
-				{ssids[name].signal}
-			</td>
-			<td>
-				{ssids[name].last_seen_before}
-			</td>
-			<td>
-			<details>
-				<summary>...</summary>
-				{ssids[name].ts}
-			</details>
-			</td>
-			<td>
-			<details>
-				<summary>...</summary>
-				<pre>{JSON.stringify(ssids[name], null, ' ')}</pre>
-			</details>
-			</td>
-		</tr>
+		<Ssid ssid={ssids[name]}/>
 	{/each}
 </table>
 
@@ -208,7 +220,7 @@
 				{m.id}
 			</td>
 			<td>
-				<small>{m.ts}</small>:
+				<small>{dayjs(m.ts).format('HH:mm:ss.SSS')}</small>:
 				<br>
 				<b>
 					{JSON.stringify(m.msg, null, '')}
@@ -219,6 +231,9 @@
 	{/each}
 </table>
 
+<br>
+
+{now} |
 
 <style>
     table {

@@ -9,8 +9,11 @@
     "snowpack": "^3.0.1"
   },
   "dependencies": {
+    "@smui/data-table": "^4.1.0",
+    "dayjs": "^1.10.4",
     "js-websocket-reconnect-client": "^0.0.13",
     "svelte": "^3.37.0",
+    "svelte-simple-datatables": "^0.1.25",
     "underscore": "^1.13.1",
     "websocket-reconnect": "^1.0.4"
   }

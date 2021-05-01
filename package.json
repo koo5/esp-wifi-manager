@@ -5,11 +5,15 @@
     "test": "echo \"This template does not include a test runner by default.\" && exit 1"
   },
   "devDependencies": {
+    "@smui/data-table": "^4.1.0",
+    "@smui/icon-button": "^4.1.0",
+    "@smui/linear-progress": "^4.1.0",
+    "@smui/ripple": "^4.1.0",
     "@snowpack/plugin-svelte": "^3.6.1",
+    "smui-theme": "^4.1.0",
     "snowpack": "^3.0.1"
   },
   "dependencies": {
-    "@smui/data-table": "^4.1.0",
     "dayjs": "^1.10.4",
     "js-websocket-reconnect-client": "^0.0.13",
     "svelte": "^3.37.0",

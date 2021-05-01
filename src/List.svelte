@@ -4,7 +4,6 @@
 	import _ from 'underscore';
 	import {onMount} from "svelte";
 	import WebSocketClient from "js-websocket-reconnect-client";
-	import Ssids from './Ssids.svelte';
 	import Ssid from './Ssid.svelte';
 
 	export let host = "localhost:8080";
@@ -155,7 +154,6 @@
 	}
 
 </script>
-<Ssids></Ssids>
 
 <h5>Connection</h5>
 <table>

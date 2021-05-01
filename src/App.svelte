@@ -1,6 +1,14 @@
 <script>
 
 	import List from './List.svelte';
+	import Ssids from './Ssids.svelte';
+	import IconButton from '@smui/icon-button';
+	import LinearProgress from '@smui/linear-progress';
+
+
+
+  let progress = 300;
+  let closed = false;
 
 </script>
 

@@ -1,3 +1,34 @@
+<script>
+  import DataTable, { Head, Body, Row, Cell, Label } from '@smui/data-table';
+  import IconButton from '@smui/icon-button';
+
+  let items = [];
+  let sort = 'id';
+  let sortDirection = 'ascending';
+
+  if (typeof fetch !== 'undefined') {
+    fetch(
+      'https://gist.githubusercontent.com/hperrin/e24a4ebd9afdf2a8c283338ae5160a62/raw/dcbf8e6382db49b0dcab70b22f56b1cc444f26d4/users.json'
+    )
+      .then((response) => response.json())
+      .then((json) => (items = json));
+  }
+
+  function handleSort() {
+    items.sort((a, b) => {
+      const [aVal, bVal] = [a[sort], b[sort]][
+        sortDirection === 'ascending' ? 'slice' : 'reverse'
+      ]();
+      if (typeof aVal === 'string') {
+        return aVal.localeCompare(bVal);
+      }
+      return aVal - bVal;
+    });
+    items = items;
+  }
+</script>
+
+
 <DataTable
   sortable
   bind:sort
@@ -53,32 +84,3 @@
   </Body>
 </DataTable>
 
-<script>
-  import DataTable, { Head, Body, Row, Cell, Label } from '@smui/data-table';
-  import IconButton from '@smui/icon-button';
-
-  let items = [];
-  let sort = 'id';
-  let sortDirection = 'ascending';
-
-  if (typeof fetch !== 'undefined') {
-    fetch(
-      'https://gist.githubusercontent.com/hperrin/e24a4ebd9afdf2a8c283338ae5160a62/raw/dcbf8e6382db49b0dcab70b22f56b1cc444f26d4/users.json'
-    )
-      .then((response) => response.json())
-      .then((json) => (items = json));
-  }
-
-  function handleSort() {
-    items.sort((a, b) => {
-      const [aVal, bVal] = [a[sort], b[sort]][
-        sortDirection === 'ascending' ? 'slice' : 'reverse'
-      ]();
-      if (typeof aVal === 'string') {
-        return aVal.localeCompare(bVal);
-      }
-      return aVal - bVal;
-    });
-    items = items;
-  }
-</script>

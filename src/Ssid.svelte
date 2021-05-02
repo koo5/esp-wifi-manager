@@ -30,7 +30,8 @@
 	{
 		const msg = {
 			cmd: 'connect',
-			args: {'ssid': ssid.ssid, 'pass': password, 'ts': new Date()}
+			args: {'ssid': ssid.ssid, 'pass': password},
+			'ts': new Date()
 		};
 		/*var xhr = new XMLHttpRequest();
 		xhr.open("POST", "http://" + ssid.host + "/command", true);

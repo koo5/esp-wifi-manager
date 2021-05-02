@@ -1,6 +1,10 @@
 <script>
 
+	import {getContext} from "svelte";
+
 	export let ssid;
+
+	const ws_send = getContext('ws_send');
 
 	function clamp_color(x)
 	{
@@ -14,38 +18,42 @@
 
 	const hue_red = 0;
 	const hue_green = 140;
-	$: signal_hue = hue_red + (hue_green - hue_red) / 100 * ssid.value.signal;
+	$: signal_hue = hue_red + (hue_green - hue_red) / 100 * ssid.signal;
 
 
 	function connect()
 	{
-		var xhr = new XMLHttpRequest();
+		const msg = {
+			cmd: 'connect',
+			args: {'ssid': ssid.ssid}
+		};
+
+		/*var xhr = new XMLHttpRequest();
 		xhr.open("POST", "http://" + ssid.host + "/command", true);
 		xhr.setRequestHeader('Content-Type', 'application/json');
-		xhr.send(JSON.stringify({
-			cmd: 'connect',
-			args: {'ssid': ssid.value.ssid}
-		}));
+		xhr.send(JSON.stringify(msg));
+		 */
+
+		ws_send(msg);
 	}
 
 
 </script>
 
-<tr>
 	<td>
 		<button on:click={connect}>connect</button>
 	</td>
 	<td>
-		{ssid.value.ssid}
+		{ssid.ssid}
 	</td>
 	<td style="border:2px solid hsl({signal_hue},100%,60%);">
-		{ssid.value.signal}
-	</td>
-	<td style="border:2px solid rgb({seen_red},{seen_green},0);">
-		{ssid.last_seen_before}
+		{ssid.signal}
 	</td>
 	<td>
 		{ssid.chan}
+	</td>
+	<td style="border:2px solid rgb({seen_red},{seen_green},0);">
+		{ssid.wfm_last_seen_before}
 	</td>
 	<td>
 		<details>
@@ -53,4 +61,3 @@
 			<pre>{JSON.stringify(ssid, null, ' ')}</pre>
 		</details>
 	</td>
-</tr>

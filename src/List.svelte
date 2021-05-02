@@ -129,7 +129,11 @@
 			if (value.ssid)
 			{
 				ssids[value.ssid] = {
-					...value,
+
+					wfm_connection_dialog_open: ssids?.[value.ssid]?.wfm_connection_dialog_open,
+					wfm_password: ssids?.[value.ssid]?.wfm_password,
+
+					...value, // todo maybe prefix all received keys with "esp"?
 					wfm_host: host,
 					wfm_ts: obj.ts,
 					wfm_last_seen_before: 0
@@ -230,8 +234,10 @@
 {now} |
 
 <style>
+    h5 {
+    	margin-bottom: 0em;
+    }
     .framed {
-        margin: 0;
         border: 1px inset rgba(128, 110, 164, 0.48);
         border-radius: 0px 17px 12px 13px;
         border-collapse: separate;

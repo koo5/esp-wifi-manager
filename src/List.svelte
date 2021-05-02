@@ -57,7 +57,7 @@
 	function make_ws(url)
 	{
 		last_connect_attempt_ts = new Date();
-		ws?.close();
+		ws?.close(false);
 		push('connect to ' + url);
 		const protocols = [];
 		const options = {
@@ -148,7 +148,7 @@
 		Object.entries(ssids).forEach(x =>
 		{
 			const [name, item] = x;
-			item.last_seen_before = now - item.ts;
+			item.wfm_last_seen_before = now - item.wfm_ts;
 		});
 		ssids = ssids
 	}

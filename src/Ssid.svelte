@@ -13,8 +13,8 @@
 		return x;
 	}
 
-	$: seen_red = clamp_color((ssid.last_seen_before) * 0.01);
-	$: seen_green = clamp_color((25000 - ssid.last_seen_before) * 0.02);
+	$: seen_red = clamp_color((ssid.wfm_last_seen_before) * 0.01);
+	$: seen_green = clamp_color((25000 - ssid.wfm_last_seen_before) * 0.02);
 
 	const hue_red = 0;
 	const hue_green = 140;
@@ -46,13 +46,13 @@
 	<td>
 		{ssid.ssid}
 	</td>
-	<td style="border:2px solid hsl({signal_hue},100%,60%);">
+	<td style="background-color: hsl({signal_hue},100%,60%);">
 		{ssid.signal}
 	</td>
 	<td>
 		{ssid.chan}
 	</td>
-	<td style="border:2px solid rgb({seen_red},{seen_green},0);">
+	<td style="background-color: rgb({seen_red},{seen_green},0);">
 		{ssid.wfm_last_seen_before}
 	</td>
 	<td>

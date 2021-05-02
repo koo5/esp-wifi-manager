@@ -2,7 +2,12 @@
 
 Browser frontend for an ESP32/Arduino sketch that scans for available wifi APs and let's you connect to one. Purely websocket, and a self-contained SPA, so will work straight from the demo site, just open it in your browser, connect your computer to the AP, and enter the IP.
 
-# bootstrapped with Create Snowpack App (CSA) / powered by Svelte
+# where
+https://nifty-brahmagupta-ce9402.netlify.app/
+, or served from your ESP32. The build is about 300kb.
+
+# how
+bootstrapped with Create Snowpack App (CSA) / powered by Svelte
 
 ## notes
 ### static build

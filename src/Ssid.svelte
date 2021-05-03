@@ -1,6 +1,9 @@
 <script>
 
 	import {getContext} from "svelte";
+	import {get} from 'svelte/store';
+
+	import {settings} from "./settings";
 
 	export let ssid;
 
@@ -23,7 +26,7 @@
 
 	function connect()
 	{
-		ssid.wfm_connection_dialog_open = true;
+		ssid.wfm_connection_dialog_open = !ssid.wfm_connection_dialog_open;
 	}
 
 	function connect2()
@@ -52,8 +55,33 @@
 		el.focus()
 	}
 
-	let password = ssid.wfm_password;
-	$: ssid.wfm_password = password;
+	let password = get(settings).ssids?.[ssid.ssid]?.password || ssid.wfm_password;
+	console.log('let password =' + password);
+	$: console.log('password =' + password);
+	//let password = ssid.wfm_password;
+	$: updp($settings);
+	function updp(s)
+	{
+		console.log('updp:' + JSON.stringify(s, null, ' '))
+		password = s.ssids?.[ssid.ssid]?.password;
+	}
+
+	$: update_settings(password)
+	function update_settings(password)
+	{
+		if (password === null) return;
+		ssid.wfm_password = password;
+		settings.update(x =>
+		{
+			console.log('update_settings x:' + JSON.stringify(x, null, ' '))
+			let y = {...x};
+			y.ssids = {...x.ssids||{}};
+			y.ssids[ssid.ssid] = {...y.ssids[ssid.ssid]||{}}
+			y.ssids[ssid.ssid].password = password
+			console.log('update_settings y:' + JSON.stringify(y, null, ' '))
+			return y
+		});
+	}
 
 </script>
 
@@ -64,7 +92,6 @@
 		{ssid.ssid}
 		<br>
 		{#if ssid.wfm_connection_dialog_open}
-
 		  <form action="#" on:submit|preventDefault="{connect2}">
 			<div class="form-inputs">
 				<label>password:<br>
@@ -73,15 +100,6 @@
 			</div>
 			<input type="submit" value="Connect!"/>
 		  </form>
-
-
-
-
-
-
-
-
-
 		{/if}
 	</td>
 	<td on:click={(e)=>td_click(e)} class="row_clickable" style="background-color: hsl({signal_hue},100%,60%);">

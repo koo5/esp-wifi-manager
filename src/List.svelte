@@ -126,24 +126,25 @@
 		{
 			let value = obj.msg.value;
 			last_message_ts = new Date();
-			if (value['found-ap'])
+			let v = value['found-ap'];
+			if (v)
 			{
-				const bssid = value['BSSID'];
+				const bssid = v['BSSID'];
 				ssids[bssid] = {
 
 					wfm_connection_dialog_open: ssids?.[bssid]?.wfm_connection_dialog_open,
 					wfm_password: ssids?.[bssid]?.wfm_password,
 
-					value,
+					value: v,
 
 					wfm_host: host,
 					wfm_ts: obj.ts,
 					wfm_last_seen_before: 0,
 
-					esp_ssid: value['SSID'],
-					esp_signal: value['RSSI'],
-					esp_chan: value['channel'],
-					esp_enc_type: value['encType'],
+					esp_ssid: v['SSID'],
+					esp_signal: v['RSSI'],
+					esp_chan: v['channel'],
+					esp_enc_type: v['encType'],
 					esp_bssid: bssid,
 
 				}

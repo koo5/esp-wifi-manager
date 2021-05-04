@@ -71,7 +71,8 @@
 
 		{#if ssid.wfm_connection_dialog_open}
 			<div class="framed">
-				{ssid.esp_ssid}
+				SSID:<br>
+				<b>{ssid.esp_ssid}</b>
 				<br>
 			  <form action="#" on:submit|preventDefault="{connect2}">
 				<div class="form-inputs">

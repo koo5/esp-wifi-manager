@@ -18,7 +18,7 @@
 
 	const hue_red = 0;
 	const hue_green = 140;
-	$: signal_hue = hue_red + (hue_green - hue_red) / 100 * (100-ssid.signal)
+	$: signal_hue = hue_red + (hue_green - hue_red) / 100 * (0-ssid.signal)
 
 
 	function connect()
@@ -30,7 +30,7 @@
 	{
 		const msg = {
 			cmd: 'connect',
-			args: {'ssid': ssid.ssid, 'pass': password},
+			args: {'ssid': ssid.esp_ssid, 'pass': password},
 			'ts': new Date()
 		};
 		/*var xhr = new XMLHttpRequest();

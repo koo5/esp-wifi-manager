@@ -6,18 +6,43 @@
 	import WebSocketClient from "js-websocket-reconnect-client";
 	import Ssids from './Ssids.svelte';
 
-	export let host = "localhost:8080";
-	$: url = "ws://" + host + "/wifi/ws";
+
+	const params = new URLSearchParams(window.location.search);
+
+	export let host = params.get('ws') || "localhost:8080";
+
+	function url_from_host(host)
+	{
+		return "ws://" + host + "/wifi/ws";
+	}
+
+	let url = url_from_host(host);
+	$: url = url_from_host(host);
 	$: console.log("url = "+url);
 
-	$: ws = make_ws(url, connection_attempts);
+	let url_debounced = url;
+	$: debounce_url(url)
+
+	let url_debounce_timer;
+	function debounce_url(url)
+	{
+		url_debounce_timer = setTimeout(() =>
+		{
+			url_debounced = url;
+		},
+		1000)
+	}
+
+	$: ws = make_ws(url_debounced, connection_attempts);
+
+
 	let connection_attempts = 0;
-	let ws_current_state = null;
 	let now;
 	let last_message_ts;
 	let last_connect_attempt_ts;
 	$: last_message_ago = now - last_message_ts;
 
+	$: ws_current_state = ws?.getCurrentState();
 	function update_ws_current_state()
 	{
 		ws_current_state = ws?.getCurrentState();
@@ -33,6 +58,8 @@
 		}, 5000);
 	});
 
+	$: can_connect = ['OPEN', 'CONNECTING'].indexOf(ws_current_state) !== -1;
+
 	function maybe_reconnect()
 	{
 		push('...');
@@ -43,7 +70,7 @@
 				||
 				Number.isNaN(last_message_ago)
 				||
-				['OPEN', 'CONNECTING'].indexOf(ws_current_state) === -1
+				!can_connect
 			)
 			&&
 			((now - last_connect_attempt_ts) > 10000)
@@ -169,7 +196,7 @@
 	function ws_send(json)
 	{
 		push(json);
-		return ws.send(json)
+		return ws?.send(json)
 	}
 
 	setContext('ws_send', ws_send);
@@ -222,7 +249,7 @@
 
 <h5>Scan</h5>
 <div class="framed">
-	<Ssids items={ssid_values}/>
+	<Ssids {can_connect} items={ssid_values}/>
 </div>
 
 <h5>Events</h5>

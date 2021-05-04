@@ -7,6 +7,7 @@
 
 
 	export let items;
+	export let can_connect;
 
 
 	function close_other(except)
@@ -34,6 +35,6 @@
 		<th>raw (json)</th>
 	</tr>
 	<tr slot="tbody" let:item={item}>
-		<Ssid on:close_other={() => close_other(item)} ssid={item}/>
+		<Ssid {can_connect} on:close_other={() => close_other(item)} ssid={item}/>
 	</tr>
 </TableSort>

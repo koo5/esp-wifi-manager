@@ -3,6 +3,7 @@
 	import {getContext, createEventDispatcher} from "svelte";
 
 	export let ssid;
+	export let can_connect;
 
 	const ws_send = getContext('ws_send');
 
@@ -12,13 +13,19 @@
 		if (x>255)return 255;
 		return x;
 	}
+	function clamp_sat(x)
+	{
+		if (x<0)return 0;
+		if (x>100)return 100;
+		return x;
+	}
 
-	$: seen_red = clamp_color((ssid.wfm_last_seen_before) * 0.01);
-	$: seen_green = clamp_color((25000 - ssid.wfm_last_seen_before) * 0.02);
+	$: seen_sat = clamp_sat(100 - ssid.wfm_last_seen_before / 300);
 
-	const hue_red = 0;
-	const hue_green = 140;
-	$: signal_hue = hue_red + (hue_green - hue_red) / 100 * (100+ssid.esp_signal)
+
+	/*RSSI is a percentage in the range -120db to 0db.
+	The closer to 0 the better.*/
+	$: signal_hue = 190 + ssid.esp_signal * 1.5;
 
 
 	const dispatch = createEventDispatcher();
@@ -80,7 +87,7 @@
 						<input type="password" autocomplete="123-let-me-in" use:init bind:value={password}/>
 					</label>
 				</div>
-				<input type="submit" value="Connect!"/>
+				<input type="submit" disabled={!can_connect} value="Connect!"/>
 			  </form>
 			</div>
 		{:else}
@@ -100,7 +107,7 @@
 	<td on:click={(e)=>td_click(e)} class="row_clickable" >
 		{ssid.esp_bssid}
 	</td>
-	<td on:click={(e)=>td_click(e)} class="row_clickable" style="background-color: rgb({seen_red},{seen_green},0);">
+	<td on:click={(e)=>td_click(e)} class="row_clickable" style="background-color: hsl({100},{seen_sat}%,50%);">
 		{ssid.wfm_last_seen_before}
 	</td>
 	<td>

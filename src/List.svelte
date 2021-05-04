@@ -94,7 +94,7 @@
 		} catch
 			(e)
 		{
-			push(e);
+			push('error:'+JSON.stringify(e));
 		}
 	}
 

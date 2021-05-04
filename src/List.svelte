@@ -6,8 +6,9 @@
 	import WebSocketClient from "js-websocket-reconnect-client";
 	import Ssids from './Ssids.svelte';
 
-	export let host = "localhost:8080";
-	$: url = "ws://" + host + "/svelte/ws/";
+	//export let host = "localhost:8080";
+	export let host = "192.168.140.35";
+	$: url = "ws://" + host + "/wifi/ws/";
 	$: console.log("url = "+url);
 
 	$: ws = make_ws(url, connection_attempts);

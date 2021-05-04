@@ -9,17 +9,17 @@
 	export let items;
 
 
-
-
 </script>
 
 
 <TableSort items={items}>
 	<tr slot="thead">
-		<th></th>
-		<th data-sort="ssid" data-sort-initial="descending">SSID</th>
-		<th data-sort="signal">signal</th>
-		<th data-sort="chan">chan</th>
+		<th>command</th>
+		<th data-sort="esp_ssid" data-sort-initial="descending">SSID</th>
+		<th data-sort="esp_signal">signal (RSSI)</th>
+		<th data-sort="esp_chan">channel</th>
+		<th data-sort="esp_enc_type">enc_type</th>
+		<th data-sort="esp_bssid">BSSID</th>
 		<th data-sort="wfm_last_seen_before">last seen (ms)</th>
 		<th>raw (json)</th>
 	</tr>

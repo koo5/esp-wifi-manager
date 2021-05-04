@@ -126,17 +126,26 @@
 		{
 			let value = obj.msg.value;
 			last_message_ts = new Date();
-			if (value.ssid)
+			if (value['found-ap'])
 			{
-				ssids[value.ssid] = {
+				const bssid = value['BSSID'];
+				ssids[bssid] = {
 
-					wfm_connection_dialog_open: ssids?.[value.ssid]?.wfm_connection_dialog_open,
-					wfm_password: ssids?.[value.ssid]?.wfm_password,
+					wfm_connection_dialog_open: ssids?.[bssid]?.wfm_connection_dialog_open,
+					wfm_password: ssids?.[bssid]?.wfm_password,
 
-					...value, // todo maybe prefix all received keys with "esp"?
+					value,
+
 					wfm_host: host,
 					wfm_ts: obj.ts,
-					wfm_last_seen_before: 0
+					wfm_last_seen_before: 0,
+
+					esp_ssid: value['SSID'],
+					esp_signal: value['RSSI'],
+					esp_chan: value['channel'],
+					esp_enc_type: value['encType'],
+					esp_bssid: bssid,
+
 				}
 				ssids = ssids;
 			}
@@ -144,7 +153,6 @@
 	}
 
 	let ssids = {};
-	$: ssid_names = _.sortBy(Object.keys(ssids));
 	$: ssid_values = Object.values(ssids);
 
 	function update_ssid_last_seens()

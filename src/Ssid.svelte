@@ -18,7 +18,7 @@
 
 	const hue_red = 0;
 	const hue_green = 140;
-	$: signal_hue = hue_red + (hue_green - hue_red) / 100 * ssid.signal;
+	$: signal_hue = hue_red + (hue_green - hue_red) / 100 * (100-ssid.signal)
 
 
 	function connect()
@@ -61,7 +61,8 @@
 		<button on:click={connect}>connect</button>
 	</td>
 	<td on:click={(e)=>td_click(e)} class="row_clickable">
-		{ssid.ssid}
+
+		{ssid.esp_ssid}
 		<br>
 		{#if ssid.wfm_connection_dialog_open}
 
@@ -74,21 +75,19 @@
 			<input type="submit" value="Connect!"/>
 		  </form>
 
-
-
-
-
-
-
-
-
 		{/if}
 	</td>
 	<td on:click={(e)=>td_click(e)} class="row_clickable" style="background-color: hsl({signal_hue},100%,60%);">
-		{ssid.signal}
+		{ssid.esp_signal}
 	</td>
 	<td on:click={(e)=>td_click(e)} class="row_clickable" >
-		{ssid.chan}
+		{ssid.esp_chan}
+	</td>
+	<td on:click={(e)=>td_click(e)} class="row_clickable" >
+		{ssid.esp_enc_type}
+	</td>
+	<td on:click={(e)=>td_click(e)} class="row_clickable" >
+		{ssid.esp_bssid}
 	</td>
 	<td style="background-color: rgb({seen_red},{seen_green},0);">
 		{ssid.wfm_last_seen_before}

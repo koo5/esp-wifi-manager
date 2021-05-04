@@ -18,7 +18,7 @@
 
 	const hue_red = 0;
 	const hue_green = 140;
-	$: signal_hue = hue_red + (hue_green - hue_red) / 100 * (0-ssid.signal)
+	$: signal_hue = hue_red + (hue_green - hue_red) / 100 * (100+ssid.esp_signal)
 
 
 	function connect()

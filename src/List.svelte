@@ -29,7 +29,7 @@
 		{
 			now = new Date();
 			update_ssid_last_seens();
-			maybe_reconnect();
+			//maybe_reconnect();
 		}, 5000);
 	});
 

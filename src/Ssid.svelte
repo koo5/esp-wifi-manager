@@ -1,6 +1,6 @@
 <script>
 
-	import {getContext} from "svelte";
+	import {getContext, createEventDispatcher} from "svelte";
 
 	export let ssid;
 
@@ -21,9 +21,16 @@
 	$: signal_hue = hue_red + (hue_green - hue_red) / 100 * (100+ssid.esp_signal)
 
 
+	const dispatch = createEventDispatcher();
+
 	function connect()
 	{
 		ssid.wfm_connection_dialog_open = !ssid.wfm_connection_dialog_open;
+		if (ssid.wfm_connection_dialog_open)
+		{
+			dispatch('close_other');
+
+		}
 	}
 
 	function connect2()
@@ -62,20 +69,23 @@
 	</td>
 	<td on:click={(e)=>td_click(e)} class="row_clickable">
 
-		{ssid.esp_ssid}
-		<br>
 		{#if ssid.wfm_connection_dialog_open}
-
-		  <form action="#" on:submit|preventDefault="{connect2}">
-			<div class="form-inputs">
-				<label>password:<br>
-					<input type="password" autocomplete="123-let-me-in" use:init bind:value={password}/>
-				</label>
+			<div class="framed">
+				{ssid.esp_ssid}
+				<br>
+			  <form action="#" on:submit|preventDefault="{connect2}">
+				<div class="form-inputs">
+					<label>password:<br>
+						<input type="password" autocomplete="123-let-me-in" use:init bind:value={password}/>
+					</label>
+				</div>
+				<input type="submit" value="Connect!"/>
+			  </form>
 			</div>
-			<input type="submit" value="Connect!"/>
-		  </form>
-
+		{:else}
+			{ssid.esp_ssid}
 		{/if}
+
 	</td>
 	<td on:click={(e)=>td_click(e)} class="row_clickable" style="background-color: hsl({signal_hue},100%,60%);">
 		{ssid.esp_signal}
@@ -89,7 +99,7 @@
 	<td on:click={(e)=>td_click(e)} class="row_clickable" >
 		{ssid.esp_bssid}
 	</td>
-	<td style="background-color: rgb({seen_red},{seen_green},0);">
+	<td on:click={(e)=>td_click(e)} class="row_clickable" style="background-color: rgb({seen_red},{seen_green},0);">
 		{ssid.wfm_last_seen_before}
 	</td>
 	<td>
@@ -98,3 +108,14 @@
 			<pre>{JSON.stringify(ssid, null, ' ')}</pre>
 		</details>
 	</td>
+
+
+<style>
+    .framed {
+        border: 3px inset rgba(128, 110, 164, 0.48);
+        /*border-radius: 0px 17px 12px 13px;
+        border-collapse: separate;
+        border-spacing: 1em 0;
+        width: 100%;*/
+    }
+</style>

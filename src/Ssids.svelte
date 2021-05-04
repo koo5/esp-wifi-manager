@@ -9,6 +9,16 @@
 	export let items;
 
 
+	function close_other(except)
+	{
+		items.forEach((x) =>
+		{
+			if (x !== except)
+				x.wfm_connection_dialog_open = false
+		})
+		items = items;
+	}
+
 </script>
 
 
@@ -24,6 +34,6 @@
 		<th>raw (json)</th>
 	</tr>
 	<tr slot="tbody" let:item={item}>
-		<Ssid ssid={item}/>
+		<Ssid on:close_other={() => close_other(item)} ssid={item}/>
 	</tr>
 </TableSort>

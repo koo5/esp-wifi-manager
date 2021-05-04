@@ -6,9 +6,8 @@
 	import WebSocketClient from "js-websocket-reconnect-client";
 	import Ssids from './Ssids.svelte';
 
-	//export let host = "localhost:8080";
-	export let host = "192.168.140.35";
-	$: url = "ws://" + host + "/wifi/ws/";
+	export let host = "localhost:8080";
+	$: url = "ws://" + host + "/wifi/ws";
 	$: console.log("url = "+url);
 
 	$: ws = make_ws(url, connection_attempts);
@@ -160,10 +159,16 @@
 
 	function ws_send(json)
 	{
+		push(json);
 		return ws.send(json)
 	}
 
 	setContext('ws_send', ws_send);
+
+	function scan()
+	{
+		return ws_send({'command':'do-wifiscan'})
+	}
 
 </script>
 
@@ -172,6 +177,7 @@
 	<tr>
 		<th>host</th>
 		<th>ws url</th>
+		<th>command</th>
 		<th>ws_current_state</th>
 		<th>last_message (ms)</th>
 		<th>connection_attempts</th>
@@ -183,6 +189,9 @@
 		</td>
 		<td>
 			<input bind:value={url}>
+		</td>
+		<td>
+			<button on:click={scan}>scan!</button>
 		</td>
 		<td>
 			{JSON.stringify(ws_current_state)}

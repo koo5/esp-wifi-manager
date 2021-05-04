@@ -23,7 +23,7 @@
 
 	function connect()
 	{
-		ssid.wfm_connection_dialog_open = true;
+		ssid.wfm_connection_dialog_open = !ssid.wfm_connection_dialog_open;
 	}
 
 	function connect2()

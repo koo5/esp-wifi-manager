@@ -96,6 +96,7 @@
 		}
 		try
 		{
+			/* todo , gut this library, and try avoiding creating more than one WebSocket object, and just calling close and open on it, possibly repeatedly? */
 			let ws = new WebSocketClient(url, protocols, options);
 			ws.addOnMessageHandler((m) =>
 				{

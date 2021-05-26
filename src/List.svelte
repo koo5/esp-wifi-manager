@@ -182,11 +182,12 @@ except in Test_svelte_simple_datatables.<br>
 details in individual files.<br>
 
 
-
+<!--
 <h5>Test_mattiash_svelte_tablesort</h5>
 <div class="mydiv">
 	<Test_mattiash_svelte_tablesort/>
 </div>
+-->
 
 <!--
 <h5>Test_svelte_simple_datatables</h5>
@@ -195,12 +196,11 @@ details in individual files.<br>
 </div>
 -->
 
-<!--
+
 <h5>Test_smui_data_table</h5>
 <div class="mydiv">
 	<Test_smui_data_table/>
 </div>
--->
 
 
 <!--

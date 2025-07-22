@@ -20,7 +20,7 @@
   "dependencies": {
     "dayjs": "^1.10.4",
     "js-websocket-reconnect-client": "^0.0.13",
-    "svelte": "^3.37.0",
+    "svelte": "^4.2.19",
     "underscore": "^1.13.1",
     "websocket-reconnect": "^1.0.4"
   }
